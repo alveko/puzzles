@@ -1,5 +1,5 @@
 #include <vector>
-#include <iterator> 
+#include <iterator>
 #include <algorithm> // std::min()
 #include <iostream>  // std::cin, std::cout
 
@@ -8,9 +8,9 @@
 // For example, elements of the following array
 // are traversed in ascending order:
 //
-//     11 11 11 12 
-//     14 25 27 12 
-//     14 13 13 13 
+//     11 11 11 12
+//     14 25 27 12
+//     14 13 13 13
 
 typedef void (*snake_cb)(int, int, int);
 
@@ -19,7 +19,7 @@ void go_snake_rec(int xmin, int ymin, int xmax, int ymax,
 {
     if (xmin > xmax || ymin > ymax)
         return;
-    
+
     int x, y;
 
     // 1. full top row
@@ -30,7 +30,7 @@ void go_snake_rec(int xmin, int ymin, int xmax, int ymax,
     for (x = xmin+1, y = ymax; x <  xmax; x++) cb(x, y, v2d[x][y]);
     if (xmin < xmax) for (x = xmax,   y = ymax; y >= ymin; y--) cb(x, y, v2d[x][y]);
     if (ymin < ymax) for (x = xmax-1, y = ymin; x >  xmin; x--) cb(x, y, v2d[x][y]);
-    
+
     go_snake_rec(xmin+1, ymin+1, xmax-1, ymax-1, v2d, cb);
 }
 
@@ -40,8 +40,8 @@ void go_snake(int n, int m,
     struct { int dx; int dy; } dir[] = { {0,1}, {1,0}, {0,-1}, {-1,0} };
 
     // number of spiral turns
-    int sp = (std::min(n,m) + 1) / 2; 
-    
+    int sp = (std::min(n,m) + 1) / 2;
+
     for (int s = 0; s < sp; s++) {
         size_t x = s, y = s;
         int dirs = 4;
@@ -54,7 +54,7 @@ void go_snake(int n, int m,
             sy = (sx >= sy) ? 0 : sy + 1;
             dirs = 2;
         }
-        
+
         for (int d = 0; d < dirs; d++) {
             for (int k = 0; k < ((d % 2) ? sy : sx); k++) {
                 cb(x, y, v2d[x][y]);
@@ -74,7 +74,7 @@ void snake_out(int x, int y, int val)
 int main(int argc, char *argv[])
 {
     size_t n = 0, m = 0;
-    
+
     // read input
     std::cin >> n >> m;
     std::vector< std::vector<int> > v2d(n);
@@ -90,11 +90,11 @@ int main(int argc, char *argv[])
                   std::ostream_iterator<int>(std::cout, " "));
         std::cout << std::endl;
     }
-    
+
     std::cout << "go_snake     ";
     go_snake(n, m, v2d, snake_out);
     std::cout << std::endl;
-    
+
     std::cout << "go_snake_rec ";
     go_snake_rec(0, 0, n-1, m-1, v2d, snake_out);
     std::cout << std::endl;
