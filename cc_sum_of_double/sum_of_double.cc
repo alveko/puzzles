@@ -131,12 +131,12 @@ double sumH(std::vector<double>& v)
 
     while (v.size() > 1) {
 
+        d1 = v.front();
         std::pop_heap(v.begin(), v.end(), std::greater<double>());
-        d1 = v.back();
         v.pop_back();
 
+        d2 = v.front();
         std::pop_heap(v.begin(), v.end(), std::greater<double>());
-        d2 = v.back();
         v.pop_back();
 
         TDEBUG(("heap d1 = 0x%016x = % .40e\n"
