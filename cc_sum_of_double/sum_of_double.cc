@@ -75,7 +75,7 @@ double sum0(const std::vector<double>& v)
 // Sums up all double values of the given array
 // O(N^2 lonN)
 // Quicksort it, sum two first elements, re-sort with the sum
-double sum1(std::vector<double>& v)
+double sum1(std::vector<double> v)
 {
     if (v.empty()) {
         return 0.0;
@@ -91,7 +91,7 @@ double sum1(std::vector<double>& v)
 // O(N^2)
 // Partial sort to have two min elements in the beginning of the vector
 // Sum two first (min) elements, partial sort with the sum
-double sum2(std::vector<double>& v)
+double sum2(std::vector<double> v)
 {
     if (v.empty()) {
         return 0.0;
@@ -123,7 +123,7 @@ double sum3(const std::vector<double>& v)
 // Sums up all double values of the given array
 // O(N lonN) but faster than BST
 // Create a heap, sum two min values, insert the sum into the heap, repeat
-double sumH(std::vector<double>& v)
+double sumH(std::vector<double> v)
 {
     double d1, d2;
     std::make_heap(v.begin(), v.end(), std::greater<double>());
@@ -151,7 +151,7 @@ double sumH(std::vector<double>& v)
 // Sums up all double values of the given array
 // O(N)
 // 2 queues algorithm
-double sumQ(std::vector<double>& v)
+double sumQ(std::vector<double> v)
 {
     std::queue<double> q_orig, q_sums;
     if (v.size() == 0) {
@@ -191,11 +191,26 @@ double sumQ(std::vector<double>& v)
 }
 
 // Sums up all double values of the given array
+// O(N lonN) for sorting + O(N) for Kahan summation
+double sumK(const std::vector<double>& v)
+{
+    double c = 0, t, y;
+    double sum = 0;
+    for (auto x : v) {
+        y = x - c;
+        t = sum + y;
+        c = (t - sum) - y;
+        sum = t;
+    }
+    return sum;
+}
+
+// Sums up all double values of the given array
 // O(N) but not as accurate as O(N logN) solutions
 // The idea is to devide the range of double values into segments.
 // Values falling into the same segment can be summed without precision loss.
 // In the end, all preliminary sums are summed up together.
-double sumT(std::vector<double>& v)
+double sumT(const std::vector<double>& v)
 {
     double s = 0.0;
     uint16_t exp = 0;
@@ -234,6 +249,7 @@ const uint8_t SUM_3 = (1<<2);
 const uint8_t SUM_H = (1<<3);
 const uint8_t SUM_T = (1<<4);
 const uint8_t SUM_Q = (1<<5);
+const uint8_t SUM_K = (1<<6);
 const uint8_t SUM_ALL = 0xFF;
 
 int main(int argc, char *argv[])
@@ -271,18 +287,21 @@ int main(int argc, char *argv[])
         sum = SUM_H;
     } else if (vm["algo"].as<std::string>() == "sumQ") {
         sum = SUM_Q;
+    } else if (vm["algo"].as<std::string>() == "sumK") {
+        sum = SUM_K;
     } else if (vm["algo"].as<std::string>() == "sumT") {
         sum = SUM_T;
-    } else if (vm["algo"].as<std::string>() == "sum3HQT") {
-        sum = SUM_3 | SUM_H | SUM_Q | SUM_T;
+    } else if (vm["algo"].as<std::string>() == "def") {
+        sum = SUM_3 | SUM_H | SUM_Q | SUM_K | SUM_T;
     } else if (vm["algo"].as<std::string>() == "all") {
         sum = SUM_ALL;
     }
 
     srand(time(NULL));
-    std::vector<double> input_vector, v;
+    std::vector<double> input_vector;
     generate_double_vector(input_vector, input_size);
-    double s0 = 0.0, s1 = 0.0, s2 = 0.0, s3 = 0.0, sT = 0.0, sH = 0.0, sQ = 0.0;
+    double s0 = 0.0, s1 = 0.0, s2 = 0.0, s3 = 0.0;
+    double sT = 0.0, sH = 0.0, sQ = 0.0, sK = 0.0;
 
     double vmax = 0.0, vmin = 1.0;
     for (auto d : input_vector) {
@@ -296,19 +315,17 @@ int main(int argc, char *argv[])
 
     // Naive sum
     {
-        v = input_vector;
         TRACE(("\nCalculating sum0...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        s0 = sum0(v);
+        s0 = sum0(input_vector);
         TRACE(("sum0 = 0x%016x = % .40e\n")
               % d2u(s0) % s0);
     }
 
     if (sum & SUM_1) {
-        v = input_vector;
         TRACE(("\nCalculating sum1...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        s1 = sum1(v);
+        s1 = sum1(input_vector);
         TRACE(("sum1 = 0x%016x = % .40e\n"
                "dif0 = 0x%016x = % .40e\n")
               % d2u(s1) % s1
@@ -316,10 +333,9 @@ int main(int argc, char *argv[])
     }
 
     if (sum & SUM_2) {
-        v = input_vector;
         TRACE(("\nCalculating sum2...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        s2 = sum2(v);
+        s2 = sum2(input_vector);
         TRACE(("sum2 = 0x%016x = % .40e\n"
                "dif0 = 0x%016x = % .40e\n")
               % d2u(s2) % s2
@@ -327,10 +343,9 @@ int main(int argc, char *argv[])
     }
 
     if (sum & SUM_3) {
-        v = input_vector;
         TRACE(("\nCalculating sum3...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        s3 = sum3(v);
+        s3 = sum3(input_vector);
         TRACE(("sum3 = 0x%016x = % .40e\n"
                "dif0 = 0x%016x = % .40e\n")
               % d2u(s3) % s3
@@ -338,10 +353,9 @@ int main(int argc, char *argv[])
     }
 
     if (sum & SUM_H) {
-        v = input_vector;
         TRACE(("\nCalculating sumH...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        sH = sumH(v);
+        sH = sumH(input_vector);
         TRACE(("sumH = 0x%016x = % .40e\n"
                "dif0 = 0x%016x = % .40e\n"
                "dif3 = 0x%016x = % .40e\n")
@@ -351,10 +365,9 @@ int main(int argc, char *argv[])
     }
 
     if (sum & SUM_Q) {
-        v = input_vector;
         TRACE(("\nCalculating sumQ...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        sQ = sumQ(v);
+        sQ = sumQ(input_vector);
         TRACE(("sumQ = 0x%016x = % .40e\n"
                "dif0 = 0x%016x = % .40e\n"
                "dif3 = 0x%016x = % .40e\n")
@@ -363,11 +376,22 @@ int main(int argc, char *argv[])
               % d2u(sQ - s3) % (sQ - s3));
     }
 
+    if (sum & SUM_K) {
+        TRACE(("\nCalculating sumK...\n"));
+        boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
+        sK = sumK(input_vector);
+        TRACE(("sumK = 0x%016x = % .40e\n"
+               "dif0 = 0x%016x = % .40e\n"
+               "dif3 = 0x%016x = % .40e\n")
+              % d2u(sK) % sK
+              % d2u(sK - s0) % (sK - s0)
+              % d2u(sK - s3) % (sK - s3));
+    }
+
     if (sum & SUM_T) {
-        v = input_vector;
         TRACE(("\nCalculating sum table...\n"));
         boost::timer::auto_cpu_timer t("Done in %t sec CPU, %w sec real\n");
-        sT = sumT(v);
+        sT = sumT(input_vector);
         TRACE(("sumT = 0x%016x = % .40e\n"
                "dif0 = 0x%016x = % .40e\n"
                "dif3 = 0x%016x = % .40e\n")
