@@ -121,7 +121,7 @@ double sum3(const std::vector<double>& v)
 }
 
 // Sums up all double values of the given array
-// O(N lonN) but faster than BST
+// O(N logN) but faster than BST
 // Create a heap, sum two min values, insert the sum into the heap, repeat
 double sumH(std::vector<double> v)
 {
@@ -291,7 +291,8 @@ int main(int argc, char *argv[])
         sum = SUM_K;
     } else if (vm["algo"].as<std::string>() == "sumT") {
         sum = SUM_T;
-    } else if (vm["algo"].as<std::string>() == "def") {
+    } else if (vm["algo"].as<std::string>() == "def" ||
+               vm["algo"].as<std::string>() == "sum3HQT") {
         sum = SUM_3 | SUM_H | SUM_Q | SUM_K | SUM_T;
     } else if (vm["algo"].as<std::string>() == "all") {
         sum = SUM_ALL;
