@@ -56,35 +56,15 @@ administrator can shout.
 
 
 
-Sample Output
+**Sample Output:**
 
        6
        89
 
-
-
-Explanation
-
-In the sample example given, for the first testcse N = 3 and K = 3.
-List for the first person is {2 5 3}, {8 1 6} for second and {7 4 9} for the
-third. In this case all the numbers in {4, 5, 6, 7, 8, 9} have a chance to be
-the third smallest selected number.
-
-
-All the numbers that can be shouted are :
-
-*Testcase1:*
-
-        4 5 6 7 8 9
-
-*Testcase2:*
-
-        38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109- 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126
-
-*Constraints:*
+**Constraints:**
 
         1 <= T <= 5
         1 <= N <= 1000
         1 <= K, a_i <= N
 
-All the numbers in input are positive and will fit in 32-bit integer.
+All numbers in input are positive and will fit in 32-bit integer.
