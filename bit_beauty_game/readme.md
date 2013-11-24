@@ -1,5 +1,4 @@
-Problem:
--------- 
+**Problem:**
 
 The beauty of a number X is the number of 1s in the binary representation of X.
 
@@ -24,26 +23,29 @@ Output:
 For each testcase print "First Player" if first player can win the game and
 "Second Player" otherwise.
 
-Sample Input:
-7
-1
-2
-8
-16
-42
-1000
-123
+**Sample Input:**
 
-Sample Output:
-Second Player
-First Player
-First Player
-Second Player
-Second Player
-First Player
-Second Player
+    7
+    1
+    2
+    8
+    16
+    42
+    1000
+    123
 
-Explanation:
+**Sample Output:**
+
+    Second Player
+    First Player
+    First Player
+    Second Player
+    Second Player
+    First Player
+    Second Player
+
+**Explanation:**
+
 In the first example N is 1 and first player can't change it so the winner is
 the second player.
 
