@@ -1,3 +1,6 @@
+Problem:
+-------- 
+
 The beauty of a number X is the number of 1s in the binary representation of X.
 
 Two players are plaing a game. There is number N written on a black board.
